@@ -1,26 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
+import axios from 'axios';
+import DisplaySimpsons from './components/DisplaySimpsons';
 import './App.css';
 
-function App() {
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      simpson: "",
+    };
+    this.getSimpsons = this.getSimpsons.bind(this);
+  }
+
+  getSimpsons() {
+    // Send the request
+    axios.get('https://quests.wilders.dev/simpsons-quotes/quotes')
+      // Extract the DATA from the received response
+      .then(response => response.data)
+      // Use this data to update the state
+      .then(data => {
+        console.log(data);
+        this.setState({
+          simpson: data[0],
+        });
+    });
+  }
+  
+  render() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <DisplaySimpsons simpson={this.state.simpson} />  
+      <button type="button" onClick={this.getSimpsons}>Get Simpsons</button>
     </div>
-  );
+    );
+  }
 }
-
-export default App;
+export default App
